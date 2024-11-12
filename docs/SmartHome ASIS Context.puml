@@ -1,0 +1,29 @@
+@startuml name SmartHouse
+title Тёплый дом ASIS Context Diagram (Спринт 3 Задание 1 п5)
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "Полдьзователь системы")
+Person(admin, "Администратор", "Админстратор системы")
+Person(engineer, "Иженер", "Сотрудник, устанавливающий Датчики(сенсоры)/Системы отопления")
+System(smartHouse, "SmartHouse System", "Система Теплый дом")
+System(sensor, "SmartHouse sensor", "Сенсор системы")
+System(heatingSystem, "SmartHouse HeatingSystem", "Устройство отопления")
+
+
+Rel(user, smartHouse, "Меняет температуру")
+Rel(user, smartHouse, "Просматривает показания сдатчиков(сенсоров)")
+Rel(admin, smartHouse, "Регистрирует новые устройства")
+Rel(admin, smartHouse, "Удаляет устройства")
+Rel(engineer, sensor, "Устанавливает/ремонтирует/снимает")
+Rel(engineer, heatingSystem, "Устанавливает/ремонтирует/снимает")
+Rel(engineer, user, "Выезжает для проведения работ")
+
+Rel(smartHouse, sensor, "Получает текущую температуру")
+Rel(smartHouse, heatingSystem, "Включает/выключает")
+Rel(smartHouse, heatingSystem, "Задает температуру")
+
+
+@enduml

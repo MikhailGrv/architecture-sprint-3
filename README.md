@@ -55,7 +55,7 @@
 
 ### 5.Визуализируйте контекст системы
 
-.docs\current context.puml
+.docs\SmartHome ASIS Context.puml
 
 # Базовая настройка
 

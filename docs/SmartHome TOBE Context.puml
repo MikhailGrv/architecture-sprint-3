@@ -1,5 +1,5 @@
 @startuml name SmartHouse
-title Тёплый дом AS IS Context Diagram (Спринт 3 Задание 1 п5)
+title Тёплый дом TOBE Context Diagram (Спринт 3 Задание 1 п5)
 
 top to bottom direction
 
