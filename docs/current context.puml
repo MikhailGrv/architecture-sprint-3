@@ -1,4 +1,4 @@
-@startuml
+@startuml name SmartHouse
 title Тёплый дом AS IS Context Diagram (Спринт 3 Задание 1 п5)
 
 top to bottom direction
@@ -12,8 +12,6 @@ System(smartHouse, "SmartHouse System", "Система Теплый дом")
 System(sensor, "SmartHouse sensor", "Сенсор системы")
 System(heatingSystem, "SmartHouse HeatingSystem", "Устройство отопления")
 
-' System_Ext(api, "Third-Party API", "External API for fitness data integration")
-' System_Ext(bank, "Bank System", "External bank for processing payments")
 
 Rel(user, smartHouse, "Меняет температуру")
 Rel(user, smartHouse, "Просматривает показания сдатчиков(сенсоров)")
@@ -26,9 +24,6 @@ Rel(engineer, user, "Выезжает для проведения работ")
 Rel(smartHouse, sensor, "Получает текущую температуру")
 Rel(smartHouse, heatingSystem, "Включает/выключает")
 Rel(smartHouse, heatingSystem, "Задает температуру")
-' Rel(SmartHouse,api,"Fetches fitness data")
-' Rel(SmartHouse,bank,"Processes payments")
-
 
 
 @enduml
