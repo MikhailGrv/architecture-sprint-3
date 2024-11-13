@@ -6,24 +6,38 @@ top to bottom direction
 !include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
 
 Person(user, "User", "Полдьзователь системы")
-Person(admin, "Администратор", "Админстратор системы")
-Person(engineer, "Иженер", "Сотрудник, устанавливающий Датчики(сенсоры)/Системы отопления")
 System(smartHouse, "SmartHouse System", "Система Теплый дом")
-System(sensor, "SmartHouse sensor", "Сенсор системы")
-System(heatingSystem, "SmartHouse HeatingSystem", "Устройство отопления")
+'System(sensor, "SmartHouse sensor", "Сенсор системы")
+System(smartHouseDevice, "SmartHouse Device", "Устройство и/или Датчик(Сенсор)")
+System_Ext(partners, "Partners", "Партнеры")
 
 
-Rel(user, smartHouse, "Меняет температуру")
-Rel(user, smartHouse, "Просматривает показания сдатчиков(сенсоров)")
-Rel(admin, smartHouse, "Регистрирует новые устройства")
-Rel(admin, smartHouse, "Удаляет устройства")
-Rel(engineer, sensor, "Устанавливает/ремонтирует/снимает")
-Rel(engineer, heatingSystem, "Устанавливает/ремонтирует/снимает")
-Rel(engineer, user, "Выезжает для проведения работ")
+'Rel(partners, smartHouse, "Получение документации публичного API")
+Rel(partners, smartHouseDevice, "Прошивка устройств/преднастройка (стандартные протоколы)")
+'Rel(partners, sensor, "Прошивка устройств/преднастройка (стандартные протоколы)")
+'Rel(partners, smartHouse, "TOBE2: регистрация новых типов устройств")
 
-Rel(smartHouse, sensor, "Получает текущую температуру")
-Rel(smartHouse, heatingSystem, "Включает/выключает")
-Rel(smartHouse, heatingSystem, "Задает температуру")
+Rel(partners, user, "Продажа устройств")
+Rel(partners, user, "Осблуживание устройств")
 
+'Rel(user, sensor, "Установка датчиков(сенсоров)")
+Rel(user, smartHouseDevice, "Установка устройств")
+
+Rel(user, smartHouse, "Регистрируется/управяет учеткой (стандартные протоколы)")
+Rel(user, smartHouse, "Регистрирует устройства/управляет списком устройств")
+Rel(user, smartHouse, "Управляет устройствами")
+Rel(user, smartHouse, "Просматривает показания (телеметрия)")
+Rel(user, smartHouse, "Настраивает скрипты поведения (сценарии работы)")
+
+
+' Rel(admin, smartHouse, "Регистрирует новые устройства")
+' Rel(admin, smartHouse, "Удаляет устройства")
+' Rel(engineer, sensor, "Устанавливает/ремонтирует/снимает")
+' Rel(engineer, heatingSystem, "Устанавливает/ремонтирует/снимает")
+
+
+Rel(smartHouseDevice, smartHouse, "Установка соединения (статус Online, KeepAlive)")
+Rel(smartHouseDevice, smartHouse, "Получает конфигурацию")
+Rel(smartHouseDevice, smartHouse, "Передает показания")
 
 @enduml
