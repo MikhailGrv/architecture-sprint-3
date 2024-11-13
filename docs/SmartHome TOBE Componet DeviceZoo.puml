@@ -15,7 +15,7 @@ System_Ext(partners, "Partners", "Партнеры")
 Container_Boundary(smartHouse, "SmartHouse System") {
   Container(DeviceChannelBalance, "DeviceChannelBalance", "Nginx", "Балансирует вызовы от устройств")
   Container(DeviceChannel, "DeviceChannel", "C#/java/C, Redis", "Канал подключений устройств")
-  Container(DeviceDictionary, "DeviceDictionary", "C#, Mongo", "Спраовчник типов устройств")
+  Container(DeviceDictionary, "DeviceDictionary", "C#, Postgres", "Спраовчник типов устройств")
   Container(DeviceZoo, "DeviceZoo", "C#/java, Postgres, Redis ", "Управление устройствами")
   Container(UIApiGateway, "UIApiGateway", "Nginx", "Балансирует, аутентифицирует, представляет API")
   Container(Users, "Users", "C#/java, Postgres/Mongo", "Управление пользователями + авторизация")
