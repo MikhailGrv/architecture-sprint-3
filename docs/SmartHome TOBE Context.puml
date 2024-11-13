@@ -1,11 +1,12 @@
 @startuml name SmartHouse
-title Тёплый дом TOBE Context Diagram (Спринт 3 Задание 1 п5)
+title Тёплый дом TOBE Context Diagram (Спринт 3 Задание 2)
 
 top to bottom direction
 
 !include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
 
 Person(user, "User", "Полдьзователь системы")
+Person(amdin, "Admin", "Управляет типами устройств")
 System(smartHouse, "SmartHouse System", "Система Теплый дом")
 'System(sensor, "SmartHouse sensor", "Сенсор системы")
 System(smartHouseDevice, "SmartHouse Device", "Устройство и/или Датчик(Сенсор)")
@@ -29,6 +30,7 @@ Rel(user, smartHouse, "Управляет устройствами")
 Rel(user, smartHouse, "Просматривает показания (телеметрия)")
 Rel(user, smartHouse, "Настраивает скрипты поведения (сценарии работы)")
 
+Rel(amdin, smartHouse, "Управляет справочником типов устрйоств")
 
 ' Rel(admin, smartHouse, "Регистрирует новые устройства")
 ' Rel(admin, smartHouse, "Удаляет устройства")
