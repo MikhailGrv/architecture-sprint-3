@@ -1,0 +1,72 @@
+@startuml
+title SmartHouse ZooKeeper Management Code Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+class HistoryMessage{
+    +uid processId
+    +string date
+    +string Action
+}
+
+class CommandMessage {
+    +string date
+    +uid processId
+    +string message 
+    +uid deviceId
+}
+
+class DevceIncomeMessage {
+    +string message 
+    +uid deviceId
+}
+
+class IncomeMessageController {
+    +DeviceIncomeConnectionHandler GetHandler()
+    +void handleIncomeMessage(DeviceIncomeConnectionHandler handler)
+}
+
+class IncomeCommandsController {
+    +DeviceIncomeConnectionHandler GetHandler()
+    +void handleIncomeMessage(DeviceCommandsHandler handler)
+}
+
+
+
+class DeviceIncomeConnectionHandler{
+    +Device device
+    +List<Command> commands
+    +void handleIncomeMessage(string message)
+    +void CheckForCommands(uid deviceId)
+    +void SendCommands(string commands)
+}
+
+class DeviceCommandsHandler{
+    +Device device
+    +handleIncomeMessage()
+    +void StoreCommand()
+}
+
+class Device{
+    +uid id
+    +DeviceType Type
+    +bool isOnline
+    +DateTime lastConnectionDate
+    +bool IsActive
+}
+class Command{
+    string serializaedCommand
+}
+
+IncomeMessageController "1" -- "0..*" DeviceIncomeConnectionHandler : has
+IncomeCommandsController "1" -- "0..*" DeviceCommandsHandler : has
+DeviceIncomeConnectionHandler "1" -- "1" Device: has
+DeviceCommandsHandler "1" -- "1" Device: has
+DeviceIncomeConnectionHandler "1" -- "0..*" Command: has
+CommandMessage --> IncomeCommandsController: run handle
+DevceIncomeMessage --> IncomeMessageController: run handle
+IncomeMessageController -- HistoryMessage: produce
+IncomeCommandsController -- HistoryMessage: produce
+@enduml

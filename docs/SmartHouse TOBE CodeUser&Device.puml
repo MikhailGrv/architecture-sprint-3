@@ -1,0 +1,95 @@
+@startuml
+title SmartHouse User & Devices Management Code Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+class HistoryUserMessage{
+    +uid processId
+    +string date
+    +string userLogin
+    +string Action
+}
+
+class CommandMessage {
+    +string date
+    +uid processId
+    +string message 
+    +uid deviceId
+}
+
+class User {
+  
+  +String name
+  +String email
+  +String phone
+  +List<Device> devices
+  +void register()
+  +void login()
+}
+
+class DeviceType {
+    +string name
+    +string key
+    +string version
+    +List<TelemetryType> Telemetry
+    +List<CommandType> Commands
+}
+
+class TelemetryType
+{
+    +string name
+    +string key
+    +string valueType
+}
+class CommandType
+{
+    +string name
+    +string key
+    +string valueType
+}
+
+interface ICommand {
+    +string key
+    +uid processId
+    +CommandType Type
+    +string serializeCommand()
+}
+
+
+class Device{
+    +uid id
+    +DeviceType Type
+    +bool isOnline
+    +DateTime lastConnectionDate
+    +bool IsActive
+    +Date RegisterDate
+    +Date DeactivateDate
+    +List<Telemetry> telemetry
+    +void turnOn()
+    +void turnOff()
+    +void setCommand(ICommand command)
+}
+
+class Telemetry {
+    +String key
+    +TelemetryType Type
+    +String name
+    +String value
+}
+
+User "1" -- "0..*" Device : has
+Device "1" -- "0..*" Telemetry : has
+Device "1" -- "1" DeviceType : has
+DeviceType "1" -- "0..*" TelemetryType : has
+DeviceType "1" -- "0..*" CommandType : has
+Telemetry "1" -- "1" TelemetryType : has
+Device -- ICommand : uses
+User -- HistoryUserMessage: produce
+Device -- HistoryUserMessage: produce
+Device -- CommandMessage: produce
+
+
+
+@enduml
