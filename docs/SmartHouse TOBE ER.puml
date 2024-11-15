@@ -1,0 +1,91 @@
+@startuml
+
+title SmartHouse ZooKeeper ER
+' hide the spot
+' hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "Roles" as role {
+    *role_id : number <<generated>> <<PK>>
+  --
+    *Name: text
+}
+
+
+entity "Users" as user {
+    *user_id : guid <<generated>> <<PK>>
+  --
+    *Login: text
+    *PasswordHash: text
+    Phone: text
+    Email: text
+    IsActive: bool
+    LastAciveDate: datetime
+    *role_id: number <<FK>>
+}
+role |o..o{ user
+
+entity "DeviceTypes" as deviceType {
+    *device_id : number <<generated>> <<PK>>
+  --
+    *Name: text
+    *version: text
+   
+    
+    TelemetryConfig: json
+    CommandsConfig: json
+}
+
+entity "Devices" as device {
+    *device_id : guid <<generated>> <<PK>>
+  --
+    *Name: text
+    *Type: number <<FK>>
+    *IsOnline: bool
+    serial_number:text
+    LastActiveDate:datetime
+    CurrentTelementry: json
+    CurrentState: json
+}
+
+device |o..o{ deviceType
+
+entity "UserDevices" as userDevices {
+   *device_id : guid <<FK>>
+    *user_id : guid <<FK>>
+  --
+}
+userDevices |o..o| device
+userDevices |o..o| user
+
+
+entity "DeviceIncomeMessages" as deviceIncomeMessages {
+    device_id : guid <<FK>>
+  --
+    *Date: datetime
+    *Message: json
+}
+device |o..o{ deviceIncomeMessages
+
+
+entity "DeviceCommands" as deviceCommands {
+    *device_id : guid <<FK>>
+    *user_id: guid  <<FK>>
+  --
+    *Date: datetime
+    *command: json
+}
+device |o..o{ deviceCommands
+
+
+entity "DeviceTelemetry" as deviceTelemetry {
+    *device_id : guid <<FK>>
+  --
+    *Date: datetime
+    *TelemetryData: json
+}
+device |o..o{ deviceTelemetry
+
+@enduml
