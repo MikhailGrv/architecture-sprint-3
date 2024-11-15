@@ -6,19 +6,14 @@ top to bottom direction
 !include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
 
 Person(user, "User", "Полдьзователь системы")
-Person(amdin, "Admin", "Управляет типами устройств")
+System(smartHouseDevice, "SmartHouse Device", "Устройство и/или Датчик(Сенсор)")
 
 Container_Boundary(smartHouse, "SmartHouse System") {
   Container(Users, "Users", "C#/java, Postgres/Mongo", "Управление пользователями + авторизация")
   Container(UIApiGateway, "UIApiGateway", "Nginx", "Балансирует, аутентифицирует, представляет API")
-  Container(DeviceDictionary, "DeviceDictionary", "C#, Mongo", "Спраовчник типов устройств")
-  Container(DeviceZoo, "DeviceZoo", "C#/java, Postgres, Redis ", "Управление устройствами")
   Container(DataBus, "DataBus", "kafka", "Интеграция сервисов")
   Container(UsersCache, "UsersCache", "Redis", "Кэш")
   Container(UsersDb, "UsersDb", "Mongo", "Хранилище пользователей")
-  Container(DeviceDictionaryDb, "DeviceDictionaryDb", "MongoDb", "Хранилище типов устройств")
-  Container(DeviceZooDb, "DeviceZooDb", "Postgres", "Хранилище устройств")
-  Container(DeviceZooCache, "DeviceZooCache", "Redis", "Кэш устройств")
 }
 
 Container(Users, "Users", "C#/java, Postgres/Mongo") {
@@ -26,24 +21,15 @@ Container(Users, "Users", "C#/java, Postgres/Mongo") {
   Component(UserController, "UserController", "Управление профилем пользователей")
 }
 
-Container(DeviceDictionary, "DeviceDictionary", "C#, Postgres", "Спраовчник типов устройств") {
-  Component(DictionaryController, "DictionaryController", "Управление справочником Типов устройств")
-}
-Container(DeviceZoo, "DeviceZoo", "C#/java, Postgres, Redis ", "Управление устройствами") {
-  Component(DeviceZooController, "DeviceZooController", "Управление устройствами пользователя")
-  Component(DeviceZooMessageController, "DeviceZooMessageController", "Общение с устройствами")
-}
+
 
 ' begin UIApiGateway
 Rel(user, UIApiGateway, "Регистрируется/управяет своей УЗ")
 Rel(user, UIApiGateway, "Авторизуется, получает JWT")
-Rel(user, UIApiGateway, "Регистрирует/управляет")
+Rel(user, UIApiGateway, "Регистрирует/управляет профилем")
 Rel(user, UIApiGateway, "Просматривает показания (телеметрия)")
 Rel(user, UIApiGateway, "Настраивает скрипты поведения (сценарии работы)")
 Rel(UIApiGateway, AuthController, "Проверяет JWT")
-Rel(amdin, UIApiGateway, "Авторизуется, получает JWT")
-Rel(amdin, UIApiGateway, "Управляет Справочником Устройств")
-
 ' end UIApiGateway
 
 'begin Users
@@ -64,27 +50,6 @@ Rel(AuthController, UsersDb, "Блокировка пользователя")
 Rel(AuthController, DataBus, "События авторизации, изменения статуса")
 'end users
 
-'begin DeviceDictionary
-Rel(UIApiGateway, DictionaryController, "Управляет Справочником Устройств")
-Rel(DictionaryController, DeviceDictionaryDb, "Получение списка устройств")
-Rel(DictionaryController, DeviceDictionaryDb, "Получение карточки устройства")
-Rel(DictionaryController, DeviceDictionaryDb, "Установка  карточки устройства")
-Rel(DictionaryController, DeviceDictionaryDb, "Управление статусом типа устройства")
-
-Rel(DictionaryController, DataBus, "Действия пользователя")
-Rel(DictionaryController, DataBus, "Создание карточки устройства")
-Rel(DictionaryController, DataBus, "Изменение статуса карточки устройства")
-'end DeviceDictionary
-
-'begin DeviceZoo
-Rel(UIApiGateway, DeviceZooController, "Регистрирует/управляет")
-Rel(UIApiGateway, DeviceZooController, "Просматривает показания (телеметрия)")
-Rel(UIApiGateway, DeviceZooController, "Настраивает скрипты поведения (сценарии работы)")
-
-
-
-
-'end DeviceZoo
 
 
 @enduml

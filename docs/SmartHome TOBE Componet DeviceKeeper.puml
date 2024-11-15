@@ -1,0 +1,88 @@
+@startuml name SmartHouse
+title Тёплый дом TOBE Container Diagram (Спринт 3 Задание 2)
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "Полдьзователь системы")
+System(smartHouseDevice, "SmartHouse Device", "Устройство и/или Датчик(Сенсор)")
+
+Container_Boundary(smartHouse, "SmartHouse System") {
+  Container(Users, "Users", "C#/java, Postgres/Mongo", "Управление пользователями + авторизация")
+  Container(UIApiGateway, "UIApiGateway", "Nginx", "Балансирует, аутентифицирует, представляет API")
+  Container(DeviceZooKeeper, "DeviceZooKeeper", "C#/java, Postgres, Redis ", "Управление устройствами")
+  Container(DataBus, "DataBus", "kafka", "Интеграция сервисов")
+  Container(DeviceChannelBalance, "DeviceChannelBalance", "Nginx", "Балансирует вызовы от устройств")
+}
+
+Container(Users, "Users", "C#/java, Postgres/Mongo") {
+}
+
+
+Container_Boundary(DeviceZooKeeper, "SmartHouse System") {
+    Container(DeviceZooKeeperStateCache, "DeviceZooKeeperStateCache", "Redis", "Хранилище устройств")
+    Container(DeviceMessageCache, "DeviceMessageCache", "Redis", "Кэш устройств")
+    Container(DeviceZooKeeperBus, "DeviceZooKeeperBus", "Высоконагруженное взаимодействие")
+    Container(DeviceZooKeeperService, "DeviceZooKeeper", "C#/java, Postgres, Redis ", "Управление устройствами")
+}
+Container(DeviceZooKeeperService, "DeviceZooKeeper", "C#/java, Redis, Redis ", "Управление устройствами") {
+  Component(DeviceZooKeeperController, "DeviceZooKeeperController", "Управление устройствами пользователя")
+  Component(DeviceMessageController, "DeviceMessageController", "Общение с устройствами")
+}
+
+
+' begin UIApiGateway
+Rel(user, UIApiGateway, "Авторизуется, получает JWT")
+Rel(user, UIApiGateway, "Регистриует устройство")
+Rel(user, UIApiGateway, "Просматривает показания (телеметрия)")
+Rel(user, UIApiGateway, "Настраивает скрипты поведения (сценарии работы)")
+Rel(UIApiGateway, Users, "Проверяет JWT")
+' end UIApiGateway
+
+
+
+
+
+'begin DeviceZooKeeper
+Rel(UIApiGateway, DeviceZooKeeperController, "Регистрирует устройство")
+Rel(UIApiGateway, DeviceZooKeeperController, "Просматривает показания (телеметрия)")
+Rel(UIApiGateway, DeviceZooKeeperController, "Настраивает скрипты поведения (сценарии работы)")
+
+Rel(smartHouseDevice, DeviceChannelBalance, "Установка соединения (статус Online, KeepAlive)")
+Rel(smartHouseDevice, DeviceChannelBalance, "Получает конфигурацию")
+Rel(smartHouseDevice, DeviceChannelBalance, "Передает показания")
+
+Rel(DeviceChannelBalance, DeviceMessageController, "Установка соединения (статус Online, KeepAlive)")
+Rel(DeviceChannelBalance, DeviceMessageController, "Получает конфигурацию")
+Rel(DeviceChannelBalance, DeviceMessageController, "Передает показания")
+
+Rel(DeviceMessageController, DeviceMessageCache, "Хранит текущее состояние подключения")
+Rel(DeviceMessageController, DeviceMessageCache, "Хранит входящие сообщения")
+Rel(DeviceMessageController, DeviceMessageCache, "Хранит исходящие сообщения")
+
+Rel(DeviceMessageController, DeviceZooKeeperBus, "Передает сообщения")
+Rel(DeviceMessageController, DeviceZooKeeperBus, "Передает статус доставки соообщений")
+Rel(DeviceMessageController, DeviceZooKeeperBus, "получает сообщения сообщения")
+Rel(DeviceMessageController, DeviceZooKeeperBus, "передает статус подключения устройства")
+Rel(DeviceMessageController, DataBus, "Передает отправленные/полученные сообщения для Истории")
+
+Rel(DeviceZooKeeperController, DeviceZooKeeperBus, "Получает сообщения (Телеметрию)")
+Rel(DeviceZooKeeperController, DeviceZooKeeperBus, "Получает статус отправки сообщений")
+Rel(DeviceZooKeeperController, DeviceZooKeeperBus, "Отправляет сообщения (Конфигурации/Команды)")
+
+Rel(DeviceZooKeeperController, DeviceZooKeeperController, "Серелизует/Десерелизует сообщения")
+Rel(DeviceZooKeeperController, DeviceZooKeeperStateCache, "Текущее состояние/Показания телеметрии")
+Rel(DeviceZooKeeperController, DeviceZooKeeperStateCache, "Команды пользователя/конфигурации")
+Rel(DeviceZooKeeperController, DeviceZooKeeperBus, "Отправляет команды/конфигурации")
+Rel(DeviceZooKeeperController, DataBus, "Получает карточки устройств (Типы)")
+Rel(DeviceZooKeeperController, DataBus, "Передает команды/конфигурации для Истории")
+
+
+
+
+
+'end DeviceZooKeeper
+
+
+@enduml

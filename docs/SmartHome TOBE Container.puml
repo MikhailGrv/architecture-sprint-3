@@ -14,9 +14,8 @@ System_Ext(partners, "Partners", "Партнеры")
 
 Container_Boundary(smartHouse, "SmartHouse System") {
   Container(DeviceChannelBalance, "DeviceChannelBalance", "Nginx", "Балансирует вызовы от устройств")
-  Container(DeviceChannel, "DeviceChannel", "C#/java/C, Redis", "Канал подключений устройств")
+  Container(DeviceZooKeeper, "DeviceZooKeeper", "C#/java/C, Redis", "Работа с устройствами (канал/управление)")
   Container(DeviceDictionary, "DeviceDictionary", "C#, Mongo", "Спраовчник типов устройств")
-  Container(DeviceZoo, "DeviceZoo", "C#/java, Postgres, Redis ", "Управление устройствами")
   Container(UIApiGateway, "UIApiGateway", "Nginx", "Балансирует, аутентифицирует, представляет API")
   Container(Users, "Users", "C#/java, Postgres/Mongo", "Управление пользователями + авторизация")
   Container(HistoryStorage, "HistoryStorage", "DWH?", "Хранение дсторичестких данных, витрины")
@@ -41,7 +40,7 @@ Rel(Users, DataBus, "Передает действия пользователя"
 Rel(UIApiGateway, Users, "Проверяет JWT")
 
 Rel(UIApiGateway, Users, "Напрваляет")
-Rel(UIApiGateway, DeviceZoo, "Напрваляет")
+Rel(UIApiGateway, DeviceZooKeeper, "Напрваляет")
 Rel(UIApiGateway, DeviceDictionary, "Напрваляет")
 
 Rel(amdin, UIApiGateway, "Авторизуется, получает JWT")
@@ -51,22 +50,22 @@ Rel(smartHouseDevice, DeviceChannelBalance, "Установка соединен
 Rel(smartHouseDevice, DeviceChannelBalance, "Получает конфигурацию")
 Rel(smartHouseDevice, DeviceChannelBalance, "Передает показания")
 
-Rel(DeviceChannelBalance, DeviceChannel, "Маршрутизирует запросы")
+Rel(DeviceChannelBalance, DeviceZooKeeper, "Маршрутизирует запросы")
 
 
-Rel(DeviceChannel, DataBus, "Передает сообщения от устройств")
-Rel(DeviceChannel, DataBus, "Получает сообщения для устройств")
-Rel(DeviceChannel, DataBus, "Получает сообщения о типах устройств")
-Rel(DeviceChannel, DataBus, "Передает статус подключения устройства")
+Rel(DeviceZooKeeper, DataBus, "Передает сообщения от устройств")
+Rel(DeviceZooKeeper, DataBus, "Получает сообщения для устройств")
+Rel(DeviceZooKeeper, DataBus, "Получает сообщения о типах устройств")
+Rel(DeviceZooKeeper, DataBus, "Передает статус подключения устройства")
 
 Rel(DeviceDictionary, DataBus, "Направляет информацию о типах устройств")
 
-Rel(DeviceZoo, DataBus, "Получает сообщения о типах устройств")
+Rel(DeviceZooKeeper, DataBus, "Получает сообщения о типах устройств")
 
-Rel(DeviceZoo, DataBus, "Получает статус подключения устройства")
-Rel(DeviceZoo, DataBus, "Получает сообщения от устройств")
-Rel(DeviceZoo, DataBus, "Передает сообщения для устройств")
-Rel(DeviceZoo, DataBus, "Передает действия пользователя")
+Rel(DeviceZooKeeper, DataBus, "Получает статус подключения устройства")
+Rel(DeviceZooKeeper, DataBus, "Получает сообщения от устройств")
+Rel(DeviceZooKeeper, DataBus, "Передает сообщения для устройств")
+Rel(DeviceZooKeeper, DataBus, "Передает действия пользователя")
 
 
 Rel(HistoryStorage, DataBus, "Получает сообщения для устройств")
